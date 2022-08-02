@@ -12,6 +12,13 @@ def read_file_data(filename):
         print(f'File not found: {filename}')
         sys.exit(-1)
 
+def check_file_size(length):
+    if length in [254, 340, 426, 512, 598, 1060, 1146, 1232, 1318, 1404, 1866, 1952,
+                  2038, 2124, 2210, 2758, 2844, 2930, 3016, 3650, 3736, 3822, 4542,
+                  4628, 5434]:
+        return True
+    return False
+
 def parse_tone_number(s):
     name = s[0].upper()
     number = int(s[1:])
@@ -59,6 +66,9 @@ if __name__ == '__main__':
     header[8] = tone_number - 1  # tone numbers are zero-based
 
     data = read_file_data(filename)
+    if not check_file_size(len(data)):
+        print(f'File size does not appear to be valid (was {len(data)} bytes)')
+        sys.exit(-1)
 
     message += header
     message += data
