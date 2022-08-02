@@ -83,6 +83,7 @@ def get_bank(data):
         name = patch_data[name_offset : name_offset + NAME_LENGTH].decode('UTF-8').rstrip('\x7f')
 
         patches.append({'name': name, 'index': p['index'], 'source_count': source_count,
-            'size': size, 'padding': padding, 'tone': tone_ptr, 'sources': p['sources']})
+            'size': size, 'padding': padding, 'tone': tone_ptr, 'sources': p['sources'],
+            'data': patch_data[tone_ptr : tone_ptr + size]})
 
     return {'patches': patches, 'base': base_ptr}

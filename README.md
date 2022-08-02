@@ -40,6 +40,38 @@ using MIDI channel 1 and tone number D070, would be:
 
 Use `python3 ka1tosyx.py -h` for a description of the program options.
 
+## kaatosyx
+
+Jens Groh wrote the original `kaatosyx` utility, and Jeremy Bernstein ported it to OS X
+in 2006. It is based on the `kaanalyz` utility, and uses the same bank analysis code.
+I have also reused the new Python code from the new `kaanalyz`.
+
+Looking at the K5000 MIDI specification, it seems that the block single dump files
+have `21` as the fourth header byte, instead of `20` as in the `kaatosyx` original
+source code. I used `21` and tested a .KAA bank converted to SysEx with the new
+Python utility, and my K5000S received the full bank just fine. If you have used
+the original `kaatosyx` utility successfully, please let me know. I couldn't run
+Jeremy Bernstein's OS X version in macOS Monterey; I only got a message from the
+zsh shell: `bad CPU type in executable`, because the binary Mach-O executables
+for both 32-bit Intel (i386) and the obsolete PowerPC, but not for x86_64.
+
+There are also some additional options in this Python version, which I deemed
+necessary to get a proper bank in SysEx format. The MIDI System Exclusive has the
+MIDI channel hardwired, but also the K5000 bank identifier is indicated in the
+header. It is specified with the `-b` option.
+
+If you try to use bank identifiers that are not available on your K5000
+(like if you use bank E but don't have the ME-1 board installed), then probably
+nothing will happen, but if anything bad happens (like you lose some data on your
+K5000), then I can't be held responsible.
+
+Here is the full command to convert a bank file like `Collctn1.kaa` to a MIDI System Exclusive
+file called `Collctn1.syx`, transferred on MIDI channel 1 (the default) and intended to go to bank D:
+
+    python3 kaatosyx.py Collctn1.kaa -b d
+
+Use `python3 kaatosyx.py -h` for a description of the program options.
+
 ## License
 
 Licensed under the MIT License. Copyright (C) 2022 Conifer Productions Oy.

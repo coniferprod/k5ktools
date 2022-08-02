@@ -62,6 +62,10 @@ if __name__ == '__main__':
         header[7] = 0x01
     elif bank_id == 'D':
         header[7] = 0x02
+    elif bank_id == 'E':
+        header[7] == 0x03
+    elif bank_id == 'F':
+        header[7] == 0x04
 
     header[8] = tone_number - 1  # tone numbers are zero-based
 
