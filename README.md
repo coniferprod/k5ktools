@@ -2,7 +2,7 @@
 
 Rewrites of old tools that deal with Kawai K5000 native patch file formats.
 
-See the DigitalSynth.net post [Making Sense of Kawai K5000 Patch Data Files](https://digitalsynth.net/posts/2022-07-30/making-sense-of-kawai-k5000-patch-data-files/) for the backstory and details.
+See the DigitalSynth.net post [Making Sense of Kawai K5000 Patch Data Files](https://digitalsynth.net/posts/2022/07/30/making-sense-of-kawai-k5000-patch-data-files/) for the backstory and details.
 
 To run the programs, you need to have a Python 3 environment installed.
 See [Downloading Python](https://wiki.python.org/moin/BeginnersGuide/Download)in the Python wiki for details.
