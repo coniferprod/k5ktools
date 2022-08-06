@@ -7,7 +7,7 @@ See the DigitalSynth.net post [Making Sense of Kawai K5000 Patch Data Files](htt
 To run the programs, you need to have a Python 3 environment installed.
 See [Downloading Python](https://wiki.python.org/moin/BeginnersGuide/Download)in the Python wiki for details.
 
-## kaanalyz
+## kaanalyz.py
 
 This is a rewrite of Jens Groh's `kaanalyz` program in Python 3. It was originally written
 in C, but staring hard at the code I was able to determine the structure of
@@ -20,7 +20,7 @@ to sort the patches are missing, and it can't extract the contents of the bank i
 To run, issue the command `python3 kaanalyz.py myfile.kaa`, where `myfile.kaa` should
 be a valid K5000 .KAA bank file.
 
-## ka1tosyx
+## ka1tosyx.py
 
 This is a sort of rewrite of the original `ka1tosyx` utility, but actually it's implemented
 from scratch. I don't know who wrote the original, because there was no source code, and I wasn't
@@ -40,7 +40,7 @@ using MIDI channel 1 and tone number D070, would be:
 
 Use `python3 ka1tosyx.py -h` for a description of the program options.
 
-## kaatosyx
+## kaatosyx.py
 
 Jens Groh wrote the original `kaatosyx` utility, and Jeremy Bernstein ported it to OS X
 in 2006. It is based on the `kaanalyz` utility, and uses the same bank analysis code.
@@ -71,6 +71,25 @@ file called `Collctn1.syx`, transferred on MIDI channel 1 (the default) and inte
     python3 kaatosyx.py Collctn1.kaa -b d
 
 Use `python3 kaatosyx.py -h` for a description of the program options.
+
+## identify.py
+
+Attemps to identify a native K5000 file or a MIDI System Exclusive file and give some
+information about its content.
+
+For example, this is how you would examine a .KA1 file:
+
+    python3 identify.py ADDEnsem.KA1
+
+You would get back something like this:
+
+    Treating "ADDEnsem.KA1" as native K5000 file
+    Extension .ka1: One single patch
+    File size 3650 bytes: 0 PCM, 4 ADD sources
+
+The KA1 file sizes are checked against a table originally compiled by Jens Groh.
+
+Hopefully this identification script can be augmented to cover more file types.
 
 ## License
 
