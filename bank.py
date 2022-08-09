@@ -10,6 +10,39 @@ SOURCE_COUNT_OFFSET = 51
 SOURCE_DATA_SIZE = 86
 ADD_KIT_SIZE = 806
 
+# key = file size, value = tuple of (PCM count, ADD count)
+# This is based on the table by Jens Groh.
+SINGLE_INFO = {
+    254: (2, 0),
+    340: (3, 0),
+    426: (4, 0),
+    512: (5, 0),
+    598: (6, 0),
+    1060: (1, 1),
+    1146: (2, 1),
+    1232: (3, 1),
+    1318: (4, 1),
+    1404: (5, 1),
+    1866: (0, 2),
+    1952: (1, 2),
+    2038: (2, 2),
+    2124: (3, 2),
+    2210: (4, 2),
+    2758: (0, 3),
+    2844: (1, 3),
+    2930: (2, 3),
+    3016: (3, 3),
+    3650: (0, 4),
+    3736: (1, 4),
+    3822: (2, 4),
+    4542: (0, 5),
+    4628: (1, 5),
+    5434: (0, 6),
+}
+
+def check_single_size(length):
+    return length in SINGLE_INFO
+
 def get_pointer_table(data):
     offset = 0
     pointer_table = []

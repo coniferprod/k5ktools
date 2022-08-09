@@ -4,37 +4,9 @@
 import sys
 import os
 
+import bank
 import helpers
 
-# key = file size, value = tuple of (PCM count, ADD count)
-# This is based on the table by Jens Groh.
-single_info = {
-    254: (2, 0),
-    340: (3, 0),
-    426: (4, 0),
-    512: (5, 0),
-    598: (6, 0),
-    1060: (1, 1),
-    1146: (2, 1),
-    1232: (3, 1),
-    1318: (4, 1),
-    1404: (5, 1),
-    1866: (0, 2),
-    1952: (1, 2),
-    2038: (2, 2),
-    2124: (3, 2),
-    2210: (4, 2),
-    2758: (0, 3),
-    2844: (1, 3),
-    2930: (2, 3),
-    3016: (3, 3),
-    3650: (0, 4),
-    3736: (1, 4),
-    3822: (2, 4),
-    4542: (0, 5),
-    4628: (1, 5),
-    5434: (0, 6),
-}
 
 def is_sysex(data):
     return data[0] == 0xf0 and data[-1] == 0xf7
@@ -154,8 +126,8 @@ def identify_native(filename, extension):
     if extension == 'kaa':
         lines.append('Use kaanalyz.py to get more information about this bank')
     elif extension == 'ka1':
-        if len(data) in single_info:
-            counts = single_info[len(data)]
+        if bank.check_single_size(len(data)):
+            counts = bank.SINGLE_INFO[len(data)]
             source_line += f'{counts[0]} PCM, {counts[1]} ADD sources'
         else:
             source_line += 'Does not match any valid KA1 file'

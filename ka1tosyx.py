@@ -2,14 +2,8 @@ import sys
 import os
 import argparse
 
+import bank
 import helpers
-
-def check_file_size(length):
-    if length in [254, 340, 426, 512, 598, 1060, 1146, 1232, 1318, 1404, 1866, 1952,
-                  2038, 2124, 2210, 2758, 2844, 2930, 3016, 3650, 3736, 3822, 4542,
-                  4628, 5434]:
-        return True
-    return False
 
 def parse_tone_number(s):
     name = s[0].upper()
@@ -62,7 +56,7 @@ if __name__ == '__main__':
     header[8] = tone_number - 1  # tone numbers are zero-based
 
     data = helpers.read_file_data(filename)
-    if not check_file_size(len(data)):
+    if not bank.check_single_size(len(data)):
         print(f'File size does not appear to be valid (was {len(data)} bytes)')
         sys.exit(-1)
 
