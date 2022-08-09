@@ -1,27 +1,18 @@
 import sys
 
 import bank
+import helpers
 
 def percentage(part, whole):
     percentage = 100 * float(part)/float(whole)
     return f'{percentage:.2f}%'
-
-def read_file_data(filename):
-    try:
-        with open(filename, 'rb') as f:
-            data = f.read()
-            #print('Read {} bytes from file {}'.format(len(data), filename))
-            return data
-    except FileNotFoundError:
-        print(f'File not found: {filename}')
-        sys.exit(-1)
 
 if __name__ == '__main__':
     filename = sys.argv[1]
 
     format = 'text'
 
-    data = read_file_data(filename)
+    data = helpers.read_file_data(filename)
 
     bank_data = bank.get_bank(data)
     #print_bank(bank_data)

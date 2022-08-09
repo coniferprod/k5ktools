@@ -3,16 +3,7 @@ import os
 import argparse
 
 import bank
-
-def read_file_data(filename):
-    try:
-        with open(filename, 'rb') as f:
-            data = f.read()
-            #print('Read {} bytes from file {}'.format(len(data), filename))
-            return data
-    except FileNotFoundError:
-        print(f'File not found: {filename}')
-        sys.exit(-1)
+import helpers
 
 def get_tone_map(patches):
     tone_bits = ['0'] * 128
@@ -40,14 +31,6 @@ def get_tone_map(patches):
 
     return bytes(buf)
 
-def write_file_data(filename, data):
-    try:
-        with open(filename, 'wb') as f:
-            f.write(data)
-    except FileExistsError:
-        print(f'File exists: {filename}')
-        sys.exit(-1)
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Convert Kawai K5000 .KAA files to MIDI System Exclusive format')
     parser.add_argument(dest='filenames', metavar='filename', nargs='*')
@@ -66,7 +49,7 @@ if __name__ == '__main__':
     else:
         print(f'MIDI channel: {channel}')
 
-    data = read_file_data(filename)
+    data = helpers.read_file_data(filename)
 
     bank_id = args.bank_id.upper()
     if not bank_id in ['A', 'B', 'D', 'E', 'F']:
@@ -108,4 +91,4 @@ if __name__ == '__main__':
     if args.outfile is not None:
         out_filename = args.outfile
     print(f'Writing {len(message)} bytes to "{out_filename}"')
-    write_file_data(out_filename, message)
+    helpers.write_file_data(out_filename, message)
