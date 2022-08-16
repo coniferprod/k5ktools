@@ -69,5 +69,4 @@ if __name__ == '__main__':
     if args.outfile is not None:
         out_filename = args.outfile
     print(f'Writing {len(message)} bytes to "{out_filename}"')
-    with open(out_filename, 'wb') as out_file:
-        out_file.write(bytes(message))
+    helpers.write_file_data(out_filename, message)
