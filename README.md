@@ -4,8 +4,23 @@ Rewrites of old tools that deal with Kawai K5000 native patch file formats.
 
 See the DigitalSynth.net post [Making Sense of Kawai K5000 Patch Data Files](https://digitalsynth.net/posts/2022/07/30/making-sense-of-kawai-k5000-patch-data-files/) for the backstory and details.
 
+## Running the programs
+
 To run the programs, you need to have a Python 3 environment installed.
-See [Downloading Python](https://wiki.python.org/moin/BeginnersGuide/Download)in the Python wiki for details.
+See [Downloading Python](https://wiki.python.org/moin/BeginnersGuide/Download) in the Python wiki for details.
+
+The easiest way to run the programs is to get all the code from this GitHub repository
+as a ZIP file. Click the green Code button on the repository page and select "Download
+ZIP" from the bottom of the popout menu. After the download has completed, unzip the
+file into a suitable directory on your computer.
+
+If you know Python, and expect to make some changes or additions to the programs,
+you should install Git or the GitHub client app,
+and [clone the repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository).
+
+Please note that the programs depend on helper modules, so it is not possible to just
+copy one of them. The easiest way to ensure that they work is to get the complete
+repository as described above.
 
 ## kaanalyz.py
 
@@ -15,7 +30,8 @@ the K5000 .KAA files, to be able to replicate it in Python.
 
 The program does not have all the features of the original; the options
 to sort the patches are missing, and it can't extract the contents of the bank into individual
-.KA1 files (the latter is intentional, since there is a `kaatoka1` utility waiting for a rewrite.)
+.KA1 files. The original `kaatoka1` utility does that, but I don't want to go to the
+trouble of rewriting that one, since it is easier to work with the System Exclusive files.
 
 To run, issue the command `python3 kaanalyz.py myfile.kaa`, where `myfile.kaa` should
 be a valid K5000 .KAA bank file.
@@ -47,22 +63,22 @@ in 2006. It is based on the `kaanalyz` utility, and uses the same bank analysis 
 I have also reused the new Python code from the new `kaanalyz`.
 
 Looking at the K5000 MIDI specification, it seems that the block single dump files
-have `21` as the fourth header byte, instead of `20` as in the `kaatosyx` original
-source code. I used `21` and tested a .KAA bank converted to SysEx with the new
+have `21h` as the fourth header byte, instead of `20h` as in the `kaatosyx` original
+source code. I used `21h` and tested a .KAA bank converted to SysEx with the new
 Python utility, and my K5000S received the full bank just fine. If you have used
 the original `kaatosyx` utility successfully, please let me know. I couldn't run
 Jeremy Bernstein's OS X version in macOS Monterey; I only got a message from the
-zsh shell: `bad CPU type in executable`, because the binary Mach-O executables
+zsh shell: `bad CPU type in executable`, because the binary contains Mach-O executables
 for both 32-bit Intel (i386) and the obsolete PowerPC, but not for x86_64.
 
-There are also some additional options in this Python version, which I deemed
+There are also some additional options in this Python version, which were
 necessary to get a proper bank in SysEx format. The MIDI System Exclusive has the
 MIDI channel hardwired, but also the K5000 bank identifier is indicated in the
 header. It is specified with the `-b` option.
 
 If you try to use bank identifiers that are not available on your K5000
 (like if you use bank E but don't have the ME-1 board installed), then probably
-nothing will happen, but if anything bad happens (like you lose some data on your
+nothing will happen, but if anything bad does happen (like you lose some data on your
 K5000), then I can't be held responsible.
 
 Here is the full command to convert a bank file like `Collctn1.kaa` to a MIDI System Exclusive
@@ -91,6 +107,7 @@ The KA1 file sizes are checked against a table originally compiled by Jens Groh.
 
 Hopefully this identification script can be augmented to cover more file types.
 
-## License
+## Copyright and license
 
-Licensed under the MIT License. Copyright (C) 2022 Conifer Productions Oy.
+Copyright (C) 2022 Conifer Productions Oy. Licensed under the MIT License (see
+the `LICENSE` file in the repository).
