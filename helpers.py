@@ -17,3 +17,9 @@ def write_file_data(filename, data):
     except FileExistsError:
         print(f'File exists: {filename}')
         sys.exit(-1)
+
+def hexdump(data):
+    result = ''
+    for b in data:
+        result += f'{b:02X} '
+    return result

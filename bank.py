@@ -43,6 +43,20 @@ SINGLE_INFO = {
 def check_single_size(length):
     return length in SINGLE_INFO
 
+def get_single_name(number):
+    if number in range(0, 128):
+        return f'G{number + 1:03}'
+    elif number in range(128, 256):
+        return f'B{number - 128 + 1:03}'
+    elif number in range(256, 384):
+        return f'A{number - 256 + 1:03}'
+    elif number in range(384, 512):
+        return f'D{number - 384 + 1:03}'
+    elif number in range(512, 640):
+        return f'E{number - 512 + 1:03}'
+    elif number in range(640, 768):
+        return f'F{number - 640 + 1:03}'
+
 def get_pointer_table(data):
     offset = 0
     pointer_table = []

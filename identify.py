@@ -6,6 +6,7 @@ import os
 
 import bank
 import helpers
+import multi
 
 
 def is_sysex(data):
@@ -90,11 +91,62 @@ def identify_sysex(filename):
             line += f'for bank {location}'
         lines.append(line)
     elif cardinality == 'one':
-        tone_num = data[8] + 1
-        lines.append(f'Kind: {kind}')
-        lines.append(f'Contains {kind} tone {location}{tone_num}')
+        #lines.append(f'Kind: {kind}')
+        if kind == 'combi/multi':
+            number = data[7] + 1
+            lines.append(f'Contains {kind} patch M{number:02}')
+            lines.extend(report_multi(data[8:-1]))
+        elif kind == 'single':
+            tone_num = data[8] + 1
+            lines.append(f'Contains {kind} patch {location}{tone_num}')
     else:
         lines.append('Unable to determine patch information')
+
+    return lines
+
+def report_multi(data):
+    lines = []
+
+    #checksum = data[0]
+    mute_byte = data[48] & 0x0f  # mask off top 4 bits in case there is junk
+    mute_bits = bin(mute_byte)[2:].zfill(4)  # strip off the '0b' prefix, pad left with zeros to four bits
+    #print(f'mute_bits = {mute_bits}')
+
+    sections = []
+    for i in range(0, 4):
+        sections.append({'number': i + 1})
+
+    section_num = 1
+    for mb in reversed(mute_bits):  # reversed to get natural section order
+        sections[section_num - 1]['mute'] = False if mb == '1' else True # 0=mute, 1=active
+        section_num += 1
+
+    section_data = data[55:]
+    #print(section_data)
+    #print(len(section_data))
+
+    section_chunks = [section_data[i:i + 12] for i in range(0, len(section_data), 12)]
+    #print(section_chunks)
+    #for chunk in section_chunks:
+    #    print(helpers.hexdump(chunk))
+    section_num = 1
+    for chunk in section_chunks:
+        # Combine the MSB and LSB into a 9-bit value
+        msb = bin(chunk[0])[2:].zfill(2) # strip off the '0b' prefix, pad left to two bits
+        lsb = bin(chunk[1])[2:].zfill(7)
+        single_number = int(msb + lsb, 2) # convert the combined msb + lsb bit string into a number
+        sections[section_num - 1]['single'] = single_number
+        section_num += 1
+
+    for section in sections:
+        if not section['mute']:
+            lines.append(f'Section {section["number"]}: {bank.get_single_name(section["single"])}')
+
+    #computed_checksum = multi.get_checksum(data)
+    #if computed_checksum == checksum:
+    #    lines.append(f'Checksum {checksum:02X}h matches')
+    #else:
+    #    lines.append(f'Checksum mismatch: original={checksum:02X}, computed={computed_checksum:02X}h')
 
     return lines
 
@@ -122,16 +174,24 @@ def identify_native(filename, extension):
 
     lines.append(kind_line)
 
-    source_line = f'File size {len(data)} bytes: '
+    lines.append(f'File size: {len(data)} bytes')
+
+    source_line = ''
     if extension == 'kaa':
         lines.append('Use kaanalyz.py to get more information about this bank')
     elif extension == 'ka1':
         if bank.check_single_size(len(data)):
             counts = bank.SINGLE_INFO[len(data)]
-            source_line += f'{counts[0]} PCM, {counts[1]} ADD sources'
+            source_line = f'{counts[0]} PCM, {counts[1]} ADD sources'
         else:
-            source_line += 'Does not match any valid KA1 file'
+            source_line = 'Does not match any valid KA1 file'
         lines.append(source_line)
+    elif extension == 'kc1':
+        if multi.check_size(len(data)):
+            lines.extend(report_multi(data))
+        else:
+            source_line = "Does not look like a valid combi/multi KC1 file"
+            lines.append(source_line)
 
     return lines
 
