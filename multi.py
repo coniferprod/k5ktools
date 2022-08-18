@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Tuple
 
+MULTI_COUNT = 64  # number of multis in a KCA bank
 SECTION_COUNT = 4
 MULTI_DATA_SIZE = 103
 

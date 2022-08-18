@@ -81,15 +81,20 @@ def identify_sysex(filename):
 
     # Construct information lines from the collected info:
     if cardinality == 'block':
-        tone_map = get_tone_map(data)
-        tone_count = 0
-        for tone in tone_map:
-            if tone:
-                tone_count += 1
-        line = f'Contains {tone_count} {kind} tones'
-        if location is not None:
-            line += f'for bank {location}'
-        lines.append(line)
+        if kind == 'single':
+            tone_map = get_tone_map(data)
+            tone_count = 0
+            for tone in tone_map:
+                if tone:
+                    tone_count += 1
+            line = f'Contains {tone_count} {kind} tones'
+            if location is not None:
+                line += f'for bank {location}'
+            lines.append(line)
+        elif kind == 'combi/multi':
+            line = f'Contains {multi.MULTI_COUNT} {kind} patches'
+            lines.append(line)
+
     elif cardinality == 'one':
         #lines.append(f'Kind: {kind}')
         if kind == 'combi/multi':
@@ -150,6 +155,19 @@ def report_multi(data):
 
     return lines
 
+def report_multi_block(data):
+    lines = []
+
+    multi_chunks = [data[i:i + multi.MULTI_DATA_SIZE] for i in range(0, len(data), multi.MULTI_DATA_SIZE)]
+    multi_number = 1
+    for mc in multi_chunks:
+        lines.append(f'Multi M{multi_number:02}')
+        lines.extend(report_multi(mc))
+        lines.append('')
+        multi_number += 1
+
+    return lines
+
 def identify_native(filename, extension):
     lines = []
 
@@ -190,7 +208,13 @@ def identify_native(filename, extension):
         if multi.check_size(len(data)):
             lines.extend(report_multi(data))
         else:
-            source_line = "Does not look like a valid combi/multi KC1 file"
+            source_line = 'Does not look like a valid combi/multi KC1 file'
+            lines.append(source_line)
+    elif extension == 'kca':
+        if multi.check_size(len(data) / multi.MULTI_COUNT):
+            lines.extend(report_multi_block(data))
+        else:
+            source_line = 'Does not look like a valid KCA bank of combis/multis'
             lines.append(source_line)
 
     return lines
