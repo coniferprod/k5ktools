@@ -64,6 +64,11 @@ class Section:
             receive_channel=data[11]
         )
 
+    def as_data(self) -> bytes:
+        data = bytearray()
+
+        return data
+
 @dataclass
 class Control:
     source: int
@@ -71,11 +76,11 @@ class Control:
     depth: int
 
     def as_data(self) -> bytes:
-        data = bytearray(
+        data = bytearray([
             self.source,
             self.destination,
             self.depth
-        )
+        ])
         return bytes(data)
 
     @classmethod
@@ -104,8 +109,8 @@ class Common:
 
         # TODO: Append section mutes
 
-        data.append(self.control1.as_data())
-        data.append(self.control2.as_data())
+        data.extend(self.control1.as_data())
+        data.extend(self.control2.as_data())
 
         return bytes(data)
 
@@ -242,7 +247,12 @@ class MultiPatch:
     def as_data(self) -> bytes:
         data = bytearray()
 
-        data.append(self.effect.as_data())
-        data.append(self.common.as_data())
+        data.extend(self.effect.as_data())
+        data.extend(self.common.as_data())
+        for s in self.sections:
+            data.extend(s.as_data())
+
+        checksum = get_checksum(data)
+        data.insert(0, checksum)
 
         return bytes(data)
