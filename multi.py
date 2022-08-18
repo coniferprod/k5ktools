@@ -27,6 +27,13 @@ class VelocitySwitching:
     sw_type: int # 0=off, 1=loud, 2=soft
     amount: int # 1...127
 
+    @classmethod
+    def from_data(cls, data: bytes):
+        return cls(
+            sw_type=data[0],
+            amount=data[1]
+        )
+
 @dataclass
 class Section:
     instrument: int
@@ -38,6 +45,24 @@ class Section:
     zone: Tuple[int, int]  # low and high
     vel_sw: VelocitySwitching
     receive_channel: int
+
+    @classmethod
+    def from_data(cls, data: bytes):
+        msb = bin(data[0])[2:].zfill(2) # strip off the '0b' prefix, pad left to two bits
+        lsb = bin(data[1])[2:].zfill(7)
+        single_number = int(msb + lsb, 2) # convert the combined msb + lsb bit string into a number
+
+        return cls(
+            instrument=single_number,
+            volume=data[2],
+            pan=data[3],
+            effect_path=data[4],
+            transpose=data[5],
+            tune=data[6],
+            zone=(data[7], data[8]),
+            vel_sw=VelocitySwitching.from_data(data[9:11]),
+            receive_channel=data[11]
+        )
 
 @dataclass
 class Control:
@@ -52,6 +77,14 @@ class Control:
             self.depth
         )
         return bytes(data)
+
+    @classmethod
+    def from_data(cls, data: bytes):
+        return cls(
+            source=data[0],
+            destination=data[1],
+            depth=data[2]
+        )
 
 @dataclass
 class Common:
@@ -76,6 +109,22 @@ class Common:
 
         return bytes(data)
 
+    @classmethod
+    def from_data(cls, data: bytes):
+        mute_byte = data[9] & 0x0f  # mask off top 4 bits in case there is junk
+        mute_bits = bin(mute_byte)[2:].zfill(4)  # strip off the '0b' prefix, pad left with zeros to four bits
+        m = []
+        for mb in reversed(mute_bits):  # reversed to get natural section order
+            m.append(False if mb == '1' else True) # 0=mute, 1=active
+
+        return cls(
+            name=data[0:8].decode(encoding='ascii'),
+            volume=data[8],
+            mutes=m,  # collected from data[9]
+            control1=Control.from_data(data[10:13]),
+            control2=Control.from_data(data[13:16])
+        )
+
 @dataclass
 class Reverb:
     reverb_type: int
@@ -96,6 +145,16 @@ class Reverb:
         )
         return bytes(data)
 
+    @classmethod
+    def from_data(cls, data: bytes):
+        return cls(
+            reverb_type=data[0],
+            dry_wet1=data[1],
+            dry_wet2=data[2],
+            param2=data[3],
+            param3=data[4],
+            param4=data[5]
+        )
 
 @dataclass
 class Effect:
@@ -117,6 +176,17 @@ class Effect:
         )
         return bytes(data)
 
+    @classmethod
+    def from_data(cls, data: bytes):
+        return cls(
+            effect_type=data[0],
+            dry_wet=data[1],
+            param1=data[2],
+            param2=data[3],
+            param3=data[4],
+            param4=data[5]
+        )
+
 @dataclass
 class EffectSettings:
     algorithm: int  # 1...4
@@ -137,13 +207,37 @@ class EffectSettings:
 
         return bytes(data)
 
+    @classmethod
+    def from_data(cls, data: bytes):
+        return cls(
+            algorithm=data[0],
+            reverb=Reverb.from_data(data[1:7]),
+            effect1=Effect.from_data(data[7:13]),
+            effect2=Effect.from_data(data[13:19]),
+            effect3=Effect.from_data(data[19:25]),
+            effect4=Effect.from_data(data[25:31]),
+            geq=data[31:38]
+        )
+
+@dataclass
 class MultiPatch:
+    checksum: int
     effect: EffectSettings
     common: Common
     sections: List[Section]
 
-    def checksum(self) -> int:
-        return 0
+    @classmethod
+    def from_data(cls, data: bytes):
+        e = EffectSettings.from_data(data[:39])
+        c = Common.from_data(data[39:55])
+
+        section_data = data[55:]
+        section_chunks = [section_data[i:i + 12] for i in range(0, len(section_data), 12)]
+        s = []
+        for chunk in section_chunks:
+            s.append(Section.from_data(chunk))
+
+        return cls(checksum=data[0], effect=e, common=c, sections=s)
 
     def as_data(self) -> bytes:
         data = bytearray()

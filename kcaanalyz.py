@@ -6,12 +6,21 @@ import helpers
 import multi
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Convert Kawai K5000 .KCA files to MIDI System Exclusive format')
+    parser = argparse.ArgumentParser(description='Analyze a Kawai K5000 .KCA file')
     parser.add_argument(dest='filenames', metavar='filename', nargs='*')
-    parser.add_argument('-c', type=int, dest='channel', action='store', default=1, help='MIDI channel 1...16')
-    parser.add_argument('-o', dest='outfile', action='store', help='Output file (defaults to original name with .syx extension)')
     args = parser.parse_args()
 
-    #filename = args.filenames[0]
+    filename = args.filenames[0]
 
-    # TODO: Work in progress, don't use yet.
+    data = helpers.read_file_data(filename)
+    if not multi.check_size(len(data) / multi.MULTI_COUNT):
+        print(f'File size does not appear to be valid (was {len(data)} bytes)')
+        sys.exit(-1)
+
+    multi_chunks = [data[i:i + multi.MULTI_DATA_SIZE] for i in range(0, len(data), multi.MULTI_DATA_SIZE)]
+    multis = []
+    for chunk in multi_chunks:
+        multis.append(multi.MultiPatch.from_data(chunk))
+
+    for n, m in enumerate(multis):
+        print(f'M{n+1:02} {m.common.name}')
