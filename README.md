@@ -107,6 +107,27 @@ The KA1 file sizes are checked against a table originally compiled by Jens Groh.
 
 Hopefully this identification script can be augmented to cover more file types.
 
+## kc1tosyx.py
+
+The logical extension to `ka1tosyx` is to convert also combi/multi patches to MIDI System Exclusive
+format. You can do that with `kc1tosyx`. It takes a Kawai K5000 native .KC1 file and converts it
+to SysEx with similar parameters as `ka1tosyx`, except that you specify the multi number as simply
+1 to 64 (because there are 64 multis in the K5000).
+
+## kcatosyx.py
+
+If you can convert one combi/multi, you can convert a bank full of them. That is what `kcatosyx.py`
+does. It takes a Kawai K5000 native .kca file with 64 multis, and converts it into MIDI System
+exclusive format.
+
+## kcaanalyz.py
+
+You may want to get some information about what is in the combi/multi patches. The `kcaanalyz`
+utility gives you more insight into multis. It lists the single patches that the multis refer
+to, as they can be from any banks in the K5000. Since we don't know what singles are loaded into the
+various banks at any given time, `kcaanalyz` only lists the numbers of the singles (like A078),
+and not their names. Also the program only lists those multi sections which are not muted.
+
 ## Copyright and license
 
 Copyright (C) 2022 Conifer Productions Oy. Licensed under the MIT License (see
