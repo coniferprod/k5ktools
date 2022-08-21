@@ -9,13 +9,13 @@ import helpers
 import multi
 
 
-def is_sysex(data):
+def is_sysex(data: bytes) -> bool:
     return data[0] == 0xf0 and data[-1] == 0xf7
 
-def is_kawai(data):
+def is_kawai(data: bytes) -> bool:
     return data[1] == 0x40
 
-def get_tone_map(data):
+def get_tone_map(data: bytes) -> list[bool]:
     tone_data = data[8 : 8 + 19]
     bit_str = ''
     for b in tone_data:
@@ -29,7 +29,7 @@ def get_tone_map(data):
     #print(len(flag_str))
     return flags
 
-def identify_sysex(filename):
+def identify_sysex(filename: str) -> list[str]:
     lines = []
 
     lines.append(f'Treating "{filename}" as MIDI System Exclusive file')
@@ -40,7 +40,7 @@ def identify_sysex(filename):
     is_valid = is_sysex(data) and is_kawai(data)
     if not is_valid:
         lines.append('This file does not contains a System Exclusive message for Kawai')
-        return
+        return []
 
     channel = data[2] + 1
     lines.append(f'MIDI channel: {channel}')
@@ -109,7 +109,7 @@ def identify_sysex(filename):
 
     return lines
 
-def report_multi(data):
+def report_multi(data: bytes) -> list[str]:
     lines = []
 
     #checksum = data[0]
@@ -155,7 +155,7 @@ def report_multi(data):
 
     return lines
 
-def report_multi_block(data):
+def report_multi_block(data: bytes) -> list[str]:
     lines = []
 
     multi_chunks = [data[i:i + multi.MULTI_DATA_SIZE] for i in range(0, len(data), multi.MULTI_DATA_SIZE)]
@@ -168,7 +168,7 @@ def report_multi_block(data):
 
     return lines
 
-def identify_native(filename, extension):
+def identify_native(filename: str, extension: str) -> list[str]:
     lines = []
 
     lines.append(f'Treating "{filename}" as native K5000 file')
@@ -211,7 +211,7 @@ def identify_native(filename, extension):
             source_line = 'Does not look like a valid combi/multi KC1 file'
             lines.append(source_line)
     elif extension == 'kca':
-        if multi.check_size(len(data) / multi.MULTI_COUNT):
+        if multi.check_size(int(len(data) / multi.MULTI_COUNT)):
             lines.extend(report_multi_block(data))
         else:
             source_line = 'Does not look like a valid KCA bank of combis/multis'

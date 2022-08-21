@@ -3,9 +3,9 @@ import sys
 import bank
 import helpers
 
-def percentage(part, whole):
-    percentage = 100 * float(part)/float(whole)
-    return f'{percentage:.2f}%'
+def percentage(part: int, whole: int) -> str:
+    result = 100 * float(part)/float(whole)
+    return f'{result:.2f}%'
 
 if __name__ == '__main__':
     filename = sys.argv[1]

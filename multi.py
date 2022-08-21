@@ -5,10 +5,10 @@ MULTI_COUNT = 64  # number of multis in a KCA bank
 SECTION_COUNT = 4
 MULTI_DATA_SIZE = 103
 
-def check_size(length):
+def check_size(length: int) -> bool:
     return length == MULTI_DATA_SIZE
 
-def get_checksum(data):
+def get_checksum(data: bytes) -> int:
     # The multi checksum is [(common data sum) + (section data sum) + 0xa5] & 0x7f
     common_data = data[:54]
     common_sum = 0

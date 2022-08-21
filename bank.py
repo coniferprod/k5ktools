@@ -1,4 +1,5 @@
 import struct
+import typing
 
 MAX_PATCH_COUNT = 128
 MAX_SOURCE_COUNT = 6
@@ -40,10 +41,10 @@ SINGLE_INFO = {
     5434: (0, 6),
 }
 
-def check_single_size(length):
+def check_single_size(length: int) -> bool:
     return length in SINGLE_INFO
 
-def get_single_name(number):
+def get_single_name(number: int) -> str:
     if number in range(0, 128):
         return f'G{number + 1:03}'
     elif number in range(128, 256):
@@ -56,8 +57,9 @@ def get_single_name(number):
         return f'E{number - 512 + 1:03}'
     elif number in range(640, 768):
         return f'F{number - 640 + 1:03}'
+    return ''
 
-def get_pointer_table(data):
+def get_pointer_table(data: bytes) -> list[dict[str, typing.Any]]:
     offset = 0
     pointer_table = []
     for p in range(MAX_PATCH_COUNT):
@@ -72,25 +74,27 @@ def get_pointer_table(data):
             pointer_table.append({'index': p, 'is_used': is_used, 'tone': tone_ptr, 'sources': source_ptrs})
     return pointer_table
 
-def get_high_pointer(data):
+def get_high_pointer(data: bytes) -> int:
     offset = MAX_PATCH_COUNT * 7 * 4  # 128 patch locations with seven pointers of four bytes each
     entry = struct.unpack_from('>I', data, offset)
-    return entry[0]
+    return int(entry[0])
 
-def get_patch_data(data):
+def get_patch_data(data: bytes) -> bytes:
     offset = MAX_PATCH_COUNT * 7 * 4 + 4
     return data[offset : offset + POOL_SIZE]
 
-def print_pointer_table(pt):
+def print_pointer_table(pt: dict[str, typing.Any]) -> None:
     for entry in pt:
-        print('index: {}'.format(entry['index']))
-        print('tone: {}'.format(hex(entry['tone'])))
+        index = entry['index']
+        print(f'index: {index}')
+        tone = entry['tone']
+        print(f'tone: {tone:X}')
         print('sources: ')
         for src in entry['sources']:
             print(hex(src))
         print()
 
-def get_bank(data):
+def get_bank(data: bytes) -> dict[str, typing.Any]:
     pointer_table = get_pointer_table(data)
     sorted_pointer_table = sorted(pointer_table, key=lambda x: x['tone'])
     #print_pointer_table(sorted_pointer_table)

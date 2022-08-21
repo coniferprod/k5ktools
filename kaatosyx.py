@@ -1,14 +1,15 @@
 import sys
 import os
 import argparse
+import typing
 
 import bank
 import helpers
 
-def get_tone_map(patches):
+def get_tone_map(patches: list[dict[str, typing.Any]]) -> bytes:
     tone_bits = ['0'] * 128
     for patch in patches:
-        number = patch["index"]
+        number = patch['index']
         #print(f'patch number = {number}')
         tone_bits[number] = '1'
     #print('tone map: ', tone_bits)

@@ -28,7 +28,7 @@ if __name__ == '__main__':
     message = bytearray()
 
     data = helpers.read_file_data(filename)
-    if not multi.check_size(len(data) / multi.MULTI_COUNT):
+    if not multi.check_size(int(len(data) / multi.MULTI_COUNT)):
         print(f'File size does not appear to be valid (was {len(data)} bytes)')
         sys.exit(-1)
 

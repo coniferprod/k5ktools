@@ -5,7 +5,7 @@ import argparse
 import bank
 import helpers
 
-def parse_tone_number(s):
+def parse_tone_number(s: str) -> tuple[str, int]:
     name = s[0].upper()
     number = int(s[1:])
     return (name, number)

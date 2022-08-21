@@ -1,6 +1,6 @@
 import sys
 
-def read_file_data(filename):
+def read_file_data(filename: str) -> bytes:
     try:
         with open(filename, 'rb') as f:
             data = f.read()
@@ -10,7 +10,7 @@ def read_file_data(filename):
         print(f'File not found: {filename}')
         sys.exit(-1)
 
-def write_file_data(filename, data):
+def write_file_data(filename: str, data: bytes) -> None:
     try:
         with open(filename, 'wb') as f:
             f.write(data)
@@ -18,7 +18,7 @@ def write_file_data(filename, data):
         print(f'File exists: {filename}')
         sys.exit(-1)
 
-def hexdump(data):
+def hexdump(data: bytes) -> str:
     result = ''
     for b in data:
         result += f'{b:02X} '

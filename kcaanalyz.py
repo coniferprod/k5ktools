@@ -6,7 +6,7 @@ import helpers
 import multi
 import bank
 
-def report_multi(data):
+def report_multi(data: bytes) -> list[str]:
     lines = []
 
     #checksum = data[0]
@@ -46,7 +46,7 @@ def report_multi(data):
 
     return lines
 
-def report_multi_block(data):
+def report_multi_block(data: bytes) -> list[str]:
     lines = []
 
     multi_chunks = [data[i:i + multi.MULTI_DATA_SIZE] for i in range(0, len(data), multi.MULTI_DATA_SIZE)]
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     filename = args.filenames[0]
 
     data = helpers.read_file_data(filename)
-    if not multi.check_size(len(data) / multi.MULTI_COUNT):
+    if not multi.check_size(int(len(data) / multi.MULTI_COUNT)):
         print(f'File size does not appear to be valid (was {len(data)} bytes)')
         sys.exit(-1)
 
