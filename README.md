@@ -130,5 +130,5 @@ and not their names. Also the program only lists those multi sections which are 
 
 ## Copyright and license
 
-Copyright (C) 2022 Conifer Productions Oy. Licensed under the MIT License (see
+Copyright (C) 2022-2023 Conifer Productions Oy. Licensed under the MIT License (see
 the `LICENSE` file in the repository).
