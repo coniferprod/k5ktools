@@ -4,3 +4,13 @@ __pycache__/
 
 .DS_Store
 
+*.syx
+*.kaa
+*.ka1
+*.kc1
+*.kca
+*.KAA
+*.KA1
+*.KC1
+*.KCA
+
