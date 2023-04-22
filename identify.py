@@ -103,7 +103,7 @@ def identify_sysex(filename: str) -> list[str]:
             lines.extend(report_multi(data[8:-1]))
         elif kind == 'single':
             tone_num = data[8] + 1
-            lines.append(f'Contains {kind} patch {location}{tone_num}')
+            lines.append(f'Contains {kind} patch {location}{tone_num:03}')
     else:
         lines.append('Unable to determine patch information')
 
