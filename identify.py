@@ -89,7 +89,7 @@ def identify_sysex(filename: str) -> list[str]:
                     tone_count += 1
             line = f'Contains {tone_count} {kind} tones'
             if location is not None:
-                line += f'for bank {location}'
+                line += f' for bank {location}'
             lines.append(line)
         elif kind == 'combi/multi':
             line = f'Contains {multi.MULTI_COUNT} {kind} patches'
