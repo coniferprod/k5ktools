@@ -97,13 +97,14 @@ def print_pointer_table(pt: dict[str, typing.Any]) -> None:
 def get_bank(data: bytes) -> dict[str, typing.Any]:
     pointer_table = get_pointer_table(data)
     sorted_pointer_table = sorted(pointer_table, key=lambda x: x['tone'])
+    print(f"Pointer table has {len(sorted_pointer_table)} pointers")
     #print_pointer_table(sorted_pointer_table)
 
     high_ptr = get_high_pointer(data)
-    #print('high: {}'.format(hex(high_ptr)))
+    print('high: {}'.format(hex(high_ptr)))
 
     base_ptr = sorted_pointer_table[0]['tone']
-    #print(hex(base_ptr))
+    print('base: {}'.format(hex(base_ptr)))
 
     for entry in sorted_pointer_table:
         entry['tone'] -= base_ptr
