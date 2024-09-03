@@ -63,8 +63,8 @@ if __name__ == '__main__':
 
     patch_data = bytearray()
     for patch in final_patches:
+        print(f'{patch["index"]} {patch["name"]}  {hex(patch["tone"])}')
         patch_data += patch['data']
-        #print(f'added {len(patch["data"])} bytes of data')
 
     header = bytearray([0xF0, 0x40, 0x00, 0x21, 0x00, 0x0A, 0x00, 0x00])
     header[2] = channel - 1  # adjust channel to 0...15
