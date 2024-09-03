@@ -39,7 +39,7 @@ def identify_sysex(filename: str) -> list[str]:
 
     is_valid = is_sysex(data) and is_kawai(data)
     if not is_valid:
-        lines.append('This file does not contains a System Exclusive message for Kawai')
+        lines.append('This file does not contain a System Exclusive message for Kawai')
         return []
 
     channel = data[2] + 1
