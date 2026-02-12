@@ -7,7 +7,11 @@ import helpers
 
 def parse_tone_number(s: str) -> tuple[str, int]:
     name = s[0].upper()
-    number = int(s[1:])
+    number = None
+    try:
+        number = int(s[1:])
+    except ValueError:
+        number = None
     return (name, number)
 
 if __name__ == '__main__':
@@ -30,10 +34,14 @@ if __name__ == '__main__':
 
     (bank_id, tone_number) = parse_tone_number(args.number)
     if not bank_id in ['A', 'B', 'D']:
-        print(f'Bank name must be A, B, or D (was {bank_id})')
+        print(f'Bank name must be A, B, or D (was "{bank_id}")')
         sys.exit(-1)
-    if tone_number < 0 or tone_number > 127:
-        print(f'Tone number must be between 1 and 127 (was {tone_number})')
+    if tone_number is not None:
+        if tone_number < 0 or tone_number > 127:
+            print(f'Tone number must be a number from 1 to 127 (was "{tone_number}")')
+            sys.exit(-1)
+    else:
+        print(f'Tone number must be a number from 1 to 127')
         sys.exit(-1)
     print(f'Tone number: {bank_id}{tone_number:03}')
 
