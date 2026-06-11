@@ -4,6 +4,8 @@ import argparse
 
 import helpers
 import multi
+import effect
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Make a new multi/combi file for Kawai K5000 in System Exclusive format')
@@ -11,9 +13,6 @@ if __name__ == '__main__':
     parser.add_argument('-i', type=int, dest='instrument', action='store', default=1, help='Multi/combi instrument number')
     parser.add_argument('-o', dest='outfile', action='store', help='Output file name')
     args = parser.parse_args()
-
-    filename = sys.argv[1]
-    pathname, ext = os.path.splitext(filename)
 
     channel = args.channel
     if channel < 1 or channel > 16:
@@ -36,53 +35,54 @@ if __name__ == '__main__':
     message = bytearray()
     message += header
 
+    effect_settings = multi.EffectSettings(
+        algorithm=1,
+        reverb=effect.Effect(
+            effect_type=0,
+            dry_wet=0,
+            param1=0,
+            param2=0,
+            param3=0,
+            param4=0
+        ),
+        effect1=effect.Effect(
+            effect_type=0,
+            dry_wet=0,
+            param1=0,
+            param2=0,
+            param3=0,
+            param4=0
+        ),
+        effect2=effect.Effect(
+            effect_type=0,
+            dry_wet=0,
+            param1=0,
+            param2=0,
+            param3=0,
+            param4=0
+        ),
+        effect3=effect.Effect(
+            effect_type=0,
+            dry_wet=0,
+            param1=0,
+            param2=0,
+            param3=0,
+            param4=0
+        ),
+        effect4=effect.Effect(
+            effect_type=0,
+            dry_wet=0,
+            param1=0,
+            param2=0,
+            param3=0,
+            param4=0
+        ),
+        geq=[0, 0, 0, 0, 0, 0, 0]),
+
     multi_patch = multi.MultiPatch(
         checksum=0x00,  # don't care at this point
-        effect=multi.EffectSettings(
-            algorithm=1,
-            reverb=multi.Reverb(
-                reverb_type=1, # are these zero-based or one-based?
-                dry_wet1=0,
-                dry_wet2=0,
-                param2=0,
-                param3=0,
-                param4=0
-            ),
-            effect1=multi.Effect(
-                effect_type=1,
-                dry_wet=0,
-                param1=0,
-                param2=0,
-                param3=0,
-                param4=0
-            ),
-            effect2=multi.Effect(
-                effect_type=1,
-                dry_wet=0,
-                param1=0,
-                param2=0,
-                param3=0,
-                param4=0
-            ),
-            effect3=multi.Effect(
-                effect_type=1,
-                dry_wet=0,
-                param1=0,
-                param2=0,
-                param3=0,
-                param4=0
-            ),
-            effect4=multi.Effect(
-                effect_type=1,
-                dry_wet=0,
-                param1=0,
-                param2=0,
-                param3=0,
-                param4=0
-            ),
-            geq=[0, 0, 0, 0, 0, 0, 0]
-        ),
         common=multi.Common(
+            effect_settings=effect_settings,
             name='NewMulti',
             volume=100,
             mutes=[False, False, True, True],
@@ -156,9 +156,9 @@ if __name__ == '__main__':
             )
         ]
     )
-    print(multi_patch)
+    #print(multi_patch)
 
-    message += multi_patch.as_data()
+    message += bytes(multi_patch)
     message += bytes([0xf7])
 
     if args.outfile is not None:
