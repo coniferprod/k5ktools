@@ -70,7 +70,7 @@ class MainFrame(wx.Frame):
         self.statusbar = self.CreateStatusBar(number=1)  # one field
         self.statusbar.SetStatusText('Select K5000 file to convert with the File | Open menu command')
 
-        self.SetSize((640, 480))
+        self.SetSize(640, 480)
         self.SetTitle('K5KTools')
         self.Centre()
 
