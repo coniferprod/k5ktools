@@ -1,11 +1,12 @@
 import sys
 import os
 import argparse
+from typing import Any
 
 import bank
 import helpers
 
-def parse_tone_number(s: str) -> tuple[str, int]:
+def parse_tone_number(s: str) -> tuple[str, Any]:
     name = s[0].upper()
     number = None
     try:
@@ -77,4 +78,4 @@ if __name__ == '__main__':
     if args.outfile is not None:
         out_filename = args.outfile
     print(f'Writing {len(message)} bytes to "{out_filename}"')
-    helpers.write_file_data(out_filename, message)
+    helpers.write_file_data(out_filename, bytes(message))

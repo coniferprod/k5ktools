@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<single name="PowerK5K" volume="80">
+    <polyphony>POLY</polyphony>
+    <portamento status="off" speed="115"/>
+    <am>off</am>
+    <effects algorithm="3">
+        <reverb>
+
+        </reverb>
+        <effect> <!-- 1 -->
+
+        </effect>
+
+        <effect> <!-- 2 -->
+
+        </effect>
+
+        <effect> <!-- 3 -->
+
+        </effect>
+
+        <effect> <!-- 4 -->
+
+        </effect>
+    </effects>
+
+    <macro-controllers>
+        <macro> <!-- 1 -->
+
+        </macro>
+
+        <macro> <!-- 2 -->
+
+        </macro>
+
+        <macro> <!-- 3 -->
+
+        </macro>
+
+        <macro> <!-- 4 -->
+
+        </macro>
+    </macro-controllers>
+</single>

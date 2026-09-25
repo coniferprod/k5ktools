@@ -58,4 +58,4 @@ if __name__ == '__main__':
     for message in messages:
         all_message_data.extend(message)
 
-    helpers.write_file_data(args.outfile, all_message_data)
+    helpers.write_file_data(args.outfile, bytes(all_message_data))

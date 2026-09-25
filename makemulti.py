@@ -4,8 +4,8 @@ import argparse
 
 import helpers
 import multi
-import effect
-
+from effect import EffectType, Effect, EffectSettings, EffectAlgorithm
+from datatypes import EffectDepth, Level
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Make a new multi/combi file for Kawai K5000 in System Exclusive format')
@@ -35,49 +35,49 @@ if __name__ == '__main__':
     message = bytearray()
     message += header
 
-    effect_settings = multi.EffectSettings(
-        algorithm=1,
-        reverb=effect.Effect(
-            effect_type=0,
-            dry_wet=0,
-            param1=0,
-            param2=0,
-            param3=0,
-            param4=0
+    effect_settings = EffectSettings(
+        algorithm=EffectAlgorithm(1),
+        reverb=Effect(
+            effect_type=EffectType(0),
+            dry_wet=EffectDepth(0),
+            param1=Level(0),
+            param2=Level(0),
+            param3=Level(0),
+            param4=Level(0)
         ),
-        effect1=effect.Effect(
-            effect_type=0,
-            dry_wet=0,
-            param1=0,
-            param2=0,
-            param3=0,
-            param4=0
+        effect1=Effect(
+            effect_type=EffectType(0),
+            dry_wet=EffectDepth(0),
+            param1=Level(0),
+            param2=Level(0),
+            param3=Level(0),
+            param4=Level(0)
         ),
-        effect2=effect.Effect(
-            effect_type=0,
-            dry_wet=0,
-            param1=0,
-            param2=0,
-            param3=0,
-            param4=0
+        effect2=Effect(
+            effect_type=EffectType(0),
+            dry_wet=EffectDepth(0),
+            param1=Level(0),
+            param2=Level(0),
+            param3=Level(0),
+            param4=Level(0)
         ),
-        effect3=effect.Effect(
-            effect_type=0,
-            dry_wet=0,
-            param1=0,
-            param2=0,
-            param3=0,
-            param4=0
+        effect3=Effect(
+            effect_type=EffectType(0),
+            dry_wet=EffectDepth(0),
+            param1=Level(0),
+            param2=Level(0),
+            param3=Level(0),
+            param4=Level(0)
         ),
-        effect4=effect.Effect(
-            effect_type=0,
-            dry_wet=0,
-            param1=0,
-            param2=0,
-            param3=0,
-            param4=0
+        effect4=Effect(
+            effect_type=EffectType(0),
+            dry_wet=EffectDepth(0),
+            param1=Level(0),
+            param2=Level(0),
+            param3=Level(0),
+            param4=Level(0)
         ),
-        geq=[0, 0, 0, 0, 0, 0, 0]),
+        geq=[0, 0, 0, 0, 0, 0, 0])
 
     multi_patch = multi.MultiPatch(
         checksum=0x00,  # don't care at this point
@@ -164,4 +164,4 @@ if __name__ == '__main__':
     if args.outfile is not None:
         out_filename = args.outfile
     print(f'Writing {len(message)} bytes to "{out_filename}"')
-    helpers.write_file_data(out_filename, message)
+    helpers.write_file_data(out_filename, bytes(message))

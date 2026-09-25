@@ -81,14 +81,14 @@ class Effect:
     def from_bytes(cls, data: bytes):
         return cls(
             effect_type=EffectType(data[0]),
-            dry_wet=data[1],
-            param1=data[2],
-            param2=data[3],
-            param3=data[4],
-            param4=data[5]
+            dry_wet=EffectDepth(data[1]),
+            param1=Level(data[2]),
+            param2=Level(data[3]),
+            param3=Level(data[4]),
+            param4=Level(data[5])
         )
 
-class EffectAlgorithm(Enum):
+class EffectAlgorithm(IntEnum):
     ALGORITHM1 = 0
     ALGORITHM2 = 1
     ALGORITHM3 = 2
@@ -123,11 +123,11 @@ class EffectSettings:
     @classmethod
     def from_bytes(cls, data: bytes):
         return cls(
-            algorithm=data[0],
+            algorithm=EffectAlgorithm(data[0]),
             reverb=Effect.from_bytes(data[1:7]),
             effect1=Effect.from_bytes(data[7:13]),
             effect2=Effect.from_bytes(data[13:19]),
             effect3=Effect.from_bytes(data[19:25]),
             effect4=Effect.from_bytes(data[25:31]),
-            geq=data[31:38]
+            geq=list(data[31:38])
         )

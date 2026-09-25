@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xml:lang="en" version="1">
+
+    <xs:annotation>
+        <xs:documentation>
+            XML Schema for the Kawai K5000S/R/W single patch format.
+        </xs:documentation>
+    </xs:annotation>
+
+    <!-- Definitions for the range-based record values -->
+
+    <xs:simpleType name="level-type">
+        <xs:annotation>
+            <xs:documentation>
+                Level for volume, envelope, cutoff, etc. 0...127, default 0
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="127"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="signed-level-type">
+        <xs:annotation>
+            <xs:documentation>
+                Signed level -63...63, default 0
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="-63"/>
+            <xs:maxInclusive value="63"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="unsigned-level-type">
+        <xs:annotation>
+            <xs:documentation>
+                Unsigned level 0...63, default 0
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="63"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="resonance-type">
+        <xs:annotation>
+            <xs:documentation>
+                Resonance 0...31, default 0
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="31"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="filter-level-type">
+        <xs:annotation>
+            <xs:documentation>
+                Filter level 0...31, default 0
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="31"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="envelope-depth-type">
+        <xs:annotation>
+            <xs:documentation>
+                Envelope depth -63...63, default 0
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="-63"/>
+            <xs:maxInclusive value="63"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="control-time-type">
+        <xs:annotation>
+            <xs:documentation>
+                Control time -63...63, default 0
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="-63"/>
+            <xs:maxInclusive value="63"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="velocity-curve-type">
+        <xs:annotation>
+            <xs:documentation>
+                Velocity curve, 1...12, default 1
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="12"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="polyphony-type">
+        <xs:annotation>
+            <xs:documentation>
+                Polyphony mode: POLY, SOLO1, SOLO2
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="poly"/>
+            <xs:enumeration value="solo1"/>
+            <xs:enumeration value="solo2"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="am-type">
+        <xs:annotation>
+            <xs:documentation>
+                Amplitude Modulation
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="off"/>
+            <xs:enumeration value="1to2"/>
+            <xs:enumeration value="2to3"/>
+            <xs:enumeration value="3to4"/>
+            <xs:enumeration value="4to5"/>
+            <xs:enumeration value="5to6"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="source-count-type">
+        <xs:annotation>
+            <xs:documentation>
+                Number of sources in a patch, 2...6
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="2"/>
+            <xs:maxInclusive value="6"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="control-destination-type">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="pitch-offset"/>
+            <xs:enumeration value="cutoff-offset"/>
+            <xs:enumeration value="level"/>
+            <xs:enumeration value="vibrato-depth-offset"/>
+            <xs:enumeration value="growl-depth-offset"/>
+            <xs:enumeration value="tremolo-depth-offset"/>
+            <xs:enumeration value="lfo-speed-offset"/>
+            <xs:enumeration value="attack-time-offset"/>
+            <xs:enumeration value="decay1-time-offset"/>
+            <xs:enumeration value="release-time-offset"/>
+            <xs:enumeration value="velocity-offset"/>
+            <xs:enumeration value="resonance-offset"/>
+            <xs:enumeration value="pan-pot-offset"/>
+            <xs:enumeration value="ff-bias-offset"/>
+            <xs:enumeration value="ff-env-lfo-depth-offset"/>
+            <xs:enumeration value="ff-env-lfo-speed-offset"/>
+            <xs:enumeration value="harmonic-lo-offset"/>
+            <xs:enumeration value="harmonic-hi-offset"/>
+            <xs:enumeration value="harmonic-even-offset"/>
+            <xs:enumeration value="harmonic-odd-offset"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Definitions for filter (DCF) -->
+
+    <xs:simpleType name="filter-status-type">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="active"/>
+            <xs:enumeration value="bypass"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="filter-mode-type">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="lopass"/>
+            <xs:enumeration value="hipass"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="filter-envelope-type">
+        <xs:annotation>
+            <xs:documentation>Filter (DCF) envelope</xs:documentation>
+        </xs:annotation>
+
+        <xs:all>
+            <xs:element name="attack-time" type="time-type"/>
+            <xs:element name="decay1-time" type="time-type"/>
+            <xs:element name="decay1-level" type="level-type"/>
+            <xs:element name="decay2-time" type="time-type"/>
+            <xs:element name="decay2-level" type="level-type"/>
+            <xs:element name="release-time" type="time-type"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="filter-modulation-type">
+        <xs:annotation>
+            <xs:documentation>Filter (DCF) modulation</xs:documentation>
+        </xs:annotation>
+
+        <xs:all>
+            <xs:element name="ks-to-attack" type="control-time-type"/>
+            <xs:element name="ks-to-decay1" type="control-time-type"/>
+            <xs:element name="velocity-to-envelope" type="envelope-depth-type"/>
+            <xs:element name="velocity-to-attack" type="control-time-type"/>
+            <xs:element name="velocity-to-decay1" type="control-time-type"/>
+        </xs:all>
+
+    </xs:complexType>
+
+    <xs:simpleType name="pitch-envelope-time-type">
+        <xs:annotation>
+            <xs:documentation>Pitch envelope time 0..127</xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="127"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="coarse-type">
+        <xs:annotation>
+            <xs:documentation>Coarse -24...24</xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="-24"/>
+            <xs:maxInclusive value="24"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="fine-type">
+        <xs:annotation>
+            <xs:documentation>Fine -63...63</xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="-63"/>
+            <xs:maxInclusive value="63"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="pitch-envelope-type">
+        <xs:annotation>
+            <xs:documentation>Pitch envelope</xs:documentation>
+        </xs:annotation>
+
+        <xs:all>
+            <xs:element name="start-level" type="pitch-envelope-level-type"/>
+            <xs:element name="attack-time" type="pitch-envelope-time-type"/>
+            <xs:element name="attack-level" type="pitch-envelope-level-type"/>
+            <xs:element name="decay-time" type="pitch-envelope-time-type"/>
+            <xs:element name="velocity-to-level" type="envelope-depth-type"/>
+            <xs:element name="velocity-to-time" type="envelope-depth-type"/>
+        </xs:all>
+    </xs:complexType>
+
+    <!-- Definitions for amplifier (DCA) -->
+
+    <xs:complexType name="amplifier-envelope-type">
+        <xs:annotation>
+            <xs:documentation>Amplifier (DCA) envelope</xs:documentation>
+        </xs:annotation>
+
+        <xs:all>
+            <xs:element name="attack-time" type="time-type"/>
+            <xs:element name="decay1-time" type="time-type"/>
+            <xs:element name="decay1-level" type="level-type"/>
+            <xs:element name="decay2-time" type="time-type"/>
+            <xs:element name="decay2-level" type="level-type"/>
+            <xs:element name="release-time" type="time-type"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="key-scaling-control-envelope-type">
+        <xs:annotation>
+            <xs:documentation>Key scaling control envelope for DCA</xs:documentation>
+        </xs:annotation>
+        
+        <xs:all>
+            <xs:element name="level" type="signed-level-type"/>
+            <xs:element name="attack-time" type="signed-level-type"/>
+            <xs:element name="decay1-time" type="signed-level-type"/>
+            <xs:element name="release-time" type="signed-level-type"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="velocity-control-envelope-type">
+        <xs:annotation>
+            <xs:documentation>
+                Velocity control envelope for DCA.
+                Almost the same as KS control, but level is unsigned (0...63, not 0...127).
+            </xs:documentation>
+        </xs:annotation>
+        
+        <xs:all>
+            <xs:element name="level" type="unsigned-level-type"/>
+            <xs:element name="attack-time" type="signed-level-type"/>
+            <xs:element name="decay1-time" type="signed-level-type"/>
+            <xs:element name="release-time" type="signed-level-type"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="amplifier-type">
+        <xs:annotation>
+            <xs:documentation>
+                Amplifier (DCA) for a source, with various envelopes.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:all>
+            <xs:element name="velocity-curve" type="velocity-curve-type"/>
+            <xs:element name="envelope" ref="amplifier-envelope-type"/>
+            <xs:element name="key-scaling" type="key-scaling-control-envelope-type"/>
+            <xs:element name="velocity-sensitivity" type="velocity-control-envelope-type"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="filter-type">
+        <xs:annotation>
+            <xs:documentation>
+                Filter for a source, with various envelopes.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:all>
+            <xs:element name="mode" type="filter-mode-type"/>
+            <xs:element name="velocity-curve" type="velocity-curve-type"/>
+            <xs:element name="resonance" type="resonance-type"/>
+            <xs:element name="level" type="filter-level-type"/>
+            <xs:element name="cutoff" type="level-type"/>
+            <xs:element name="ks-to-cutoff" type="envelope-depth-type"/>
+            <xs:element name="velocity-to-cutoff" type="envelope-depth-type"/>
+            <xs:element name="envelope-depth" ref="envelope-depth-type"/>
+            <xs:element name="envelope" ref="filter-envelope-type"/>
+        </xs:all>
+
+        <xs:attribute name="status" type="filter-status-type" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="portamento-type">
+        <xs:annotation>
+            <xs:documentation>
+                Portamento enabled, speed 0...127, default 0.
+                If enabled is false, speed is ignored.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:all>
+            <xs:element name="enabled" type="xs:boolean"/>
+            <xs:element name="speed" type="level-type"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="macro-controller-type">
+        <xs:annotation>
+            <xs:documentation>
+                Macro controller, with a destination and depth.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:all>
+            <xs:element name="destination1" type="control-destination-type"/>
+            <xs:element name="depth1" type="signed-level-type"/>
+            <xs:element name="destination2" type="control-destination-type"/>
+            <xs:element name="depth2" type="signed-level-type"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:element name="user-controls">
+        <xs:annotation>
+            <xs:documentation>User controls for a single patch</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="macro1" ref="macro-controller-type"/>
+                <xs:element name="macro2" ref="macro-controller-type"/>
+                <xs:element name="macro3" ref="macro-controller-type"/>
+                <xs:element name="macro4" ref="macro-controller-type"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="switch-function-type">
+        <xs:annotation>
+            <xs:documentation>Switch function for a single patch</xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="OFF"/>
+            <xs:enumeration value="HARMMAX"/>
+            <xs:enumeration value="HARMBRIT"/>
+            <xs:enumeration value="HARMDARK"/>
+            <xs:enumeration value="HARMSAW"/>
+            <xs:enumeration value="SELECTLOUD"/>
+            <xs:enumeration value="DHLLOUD"/>
+            <xs:enumeration value="DHL5TH"/>
+            <xs:enumeration value="DHLODD"/>
+            <xs:enumeration value="DHLEVEN"/>
+            <xs:enumeration value="DHE#1"/>
+            <xs:enumeration value="DHE#2"/>
+            <xs:enumeration value="DHELOOPON"/>
+            <xs:enumeration value="DHFMAX"/>
+            <xs:enumeration value="DHFCOMB"/>
+            <xs:enumeration value="DHFHICUT"/>
+            <xs:enumeration value="DHFCOMB2"/>
+        </xs:restriction>
+    </xs:complexType>
+
+    <xs:element name="switches">
+        <xs:annotation>
+            <xs:documentation>Switches for a single patch</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="switch1" type="switch-function-type"/>
+                <xs:element name="switch2" type="switch-function-type"/>
+                <xs:element name="footswitch1" type="switch-function-type"/>
+                <xs:element name="footswitch2" type="switch-function-type"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="common">
+        <xs:annotation>
+            <xs:documentation>Common patch parameters</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="name" type="name-type"/>
+                <xs:element name="polyphony" type="polyphony-type"/>
+                <xs:element name="portamento" type="portamento-type"/>
+                <xs:element name="source-count" type="source-count-type"/>
+                <xs:element name="am" type="am-type"/>
+                <xs:element name="user-controls" ref="user-controls"/>
+                <xs:element name="switches" ref="switches"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="key-scaling-type">
+        <xs:annotation>
+            <xs:documentation>When the Fixed Key is being used, this parameter
+            adds the key value to control the pitch. 
+            The reference point is the Fixed Key value.</xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="0ct"/>
+            <xs:enumeration value="25ct"/>
+            <xs:enumeration value="33ct"/>
+            <xs:enumeration value="50ct"/>
+        </xs:restriction>
+    </xs:complexType>
+
+    <xs:complexType name="fixed-key-type">
+        <xs:annotation>
+            <xs:documentation>Fixed Key for a single patch.
+            The range is A-1 to C7.
+            If OFF, then normal key tracking applies.</xs:documentation>
+        </xs:annotation>
+
+        <!-- TODO: Maybe could use a regex? -->
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="OFF"/>
+            <xs:enumeration value="A-1"/>
+            <xs:enumeration value="A#-1"/>
+            <xs:enumeration value="B-1"/>
+            <xs:enumeration value="C0"/>
+            <xs:enumeration value="C#0"/>
+            <xs:enumeration value="D0"/>
+            <xs:enumeration value="D#0"/>
+            <xs:enumeration value="E0"/>
+            <xs:enumeration value="F0"/>
+            <xs:enumeration value="F#0"/>
+            <xs:enumeration value="G0"/>
+            <xs:enumeration value="G#0"/>
+            <xs:enumeration value="A0"/>
+            <xs:enumeration value="A#0"/>
+            <xs:enumeration value="B0"/>
+            <xs:enumeration value="C1"/>
+            <xs:enumeration value="C#1"/>
+            <xs:enumeration value="D1"/>
+            <xs:enumeration value="D#1"/>
+            <xs:enumeration value="E1"/>
+            <xs:enumeration value="F1"/>
+            <xs:enumeration value="F#1"/>
+            <xs:enumeration value="G1"/>
+            <xs:enumeration value="G#1"/>
+            <xs:enumeration value="A1"/>
+            <xs:enumeration value="A#1"/>
+            <xs:enumeration value="B1"/>
+            <xs:enumeration value="C2"/>
+            <xs:enumeration value="C#2"/>
+            <xs:enumeration value="D2"/>
+            <xs:enumeration value="D#2"/>
+            <xs:enumeration value="E2"/>
+            <xs:enumeration value="F2"/>
+            <xs:enumeration value="F#2"/>
+            <xs:enumeration value="G2"/>
+            <xs:enumeration value="G#2"/>
+            <xs:enumeration value="A2"/>
+            <xs:enumeration value="A#2"/>
+            <xs:enumeration value="B2"/>
+            <xs:enumeration value="C3"/>
+            <xs:enumeration value="C#3"/>
+            <xs:enumeration value="D3"/>
+            <xs:enumeration value="D#3"/>
+            <xs:enumeration value="E3"/>
+            <xs:enumeration value="F3"/>
+            <xs:enumeration value="F#3"/>
+            <xs:enumeration value="G3"/>
+            <xs:enumeration value="G#3"/>
+            <xs:enumeration value="A3"/>
+            <xs:enumeration value="A#3"/>
+            <xs:enumeration value="B3"/>
+            <xs:enumeration value="C4"/>
+            <xs:enumeration value="C#4"/>
+            <xs:enumeration value="D4"/>
+            <xs:enumeration value="D#4"/>
+            <xs:enumeration value="E4"/>
+            <xs:enumeration value="F4"/>
+            <xs:enumeration value="F#4"/>
+            <xs:enumeration value="G4"/>
+            <xs:enumeration value="G#4"/>
+            <xs:enumeration value="A4"/>
+            <xs:enumeration value="A#4"/>
+            <xs:enumeration value="B4"/>
+            <xs:enumeration value="C5"/>
+            <xs:enumeration value="C#5"/>
+            <xs:enumeration value="D5"/>
+            <xs:enumeration value="D#5"/>
+            <xs:enumeration value="E5"/>
+            <xs:enumeration value="F5"/>
+            <xs:enumeration value="F#5"/>
+            <xs:enumeration value="G5"/>
+            <xs:enumeration value="G#5"/>
+            <xs:enumeration value="A5"/>
+            <xs:enumeration value="A#5"/>
+            <xs:enumeration value="B5"/>
+            <xs:enumeration value="C6"/>
+            <xs:enumeration value="C#6"/>
+            <xs:enumeration value="D6"/>
+            <xs:enumeration value="D#6"/>
+            <xs:enumeration value="E6"/>
+            <xs:enumeration value="F6"/>
+            <xs:enumeration value="F#6"/>
+            <xs:enumeration value="G6"/>
+            <xs:enumeration value="G#6"/>
+            <xs:enumeration value="A6"/>
+            <xs:enumeration value="A#6"/>
+            <xs:enumeration value="B6"/>
+            <xs:enumeration value="C7"/>
+        </xs:restriction>
+    </xs:complexType>
+
+    <xs:complexType name="oscillator-type">
+        <xs:annotation>
+            <xs:documentation>Oscillator for a single patch</xs:documentation>
+        </xs:annotation>
+
+        <xs:all>
+            <xs:element name="waveform" type="waveform-type"/>
+            <xs:element name="coarse" type="coarse-type"/>
+            <xs:element name="fine" type="fine-type"/>
+            <xs:element name="ks-to-pitch" type="key-scaling-type"/>
+            <xs:element name="fixed-key" type="fixed-key-type"/>
+            <xs:element name="pitch-envelope" ref="pitch-envelope-type"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:element name="sources">
+        <xs:annotation>
+            <xs:documentation>Sources for a single patch (from 2 to 6)</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="source" minOccurs="2"/>
+                <xs:element ref="source" maxOccurs="6"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="source">
+        <xs:annotation>
+            <xs:documentation>Source for a single patch</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="oscillator" type="oscillator-type"/>
+                <xs:element name="filter" ref="filter-type"/>
+                <xs:element name="amplifier" ref="amplifier-type"/>
+                <xs:element name="lfo" ref="lfo-type"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="lfo-waveform-type">
+        <xs:annotation>
+            <xs:documentation>LFO waveform</xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="SIN"/>
+            <xs:enumeration value="TRI"/>
+            <xs:enumeration value="SAW"/>
+            <xs:enumeration value="SQR"/>
+            <xs:enumeration value="RND"/>
+        </xs:restriction>
+    </xs:complexType>
+
+    <xs:complexType name="lfo-type">
+        <xs:annotation>
+            <xs:documentation>LFO for a source</xs:documentation>
+        </xs:annotation>
+
+        <xs:all>
+            <xs:element name="waveform" type="lfo-waveform-type"/>
+            <xs:element name="speed" type="level-type"/>
+            <xs:element name="delay-onset" type="level-type"/>
+            <xs:element name="fade-in-time" type="level-type"/>
+            <xs:element name="fade-in-to-speed" type="level-type"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:element name="single">
+        <xs:annotation>
+            <xs:documentation>Single patch</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="common"/>
+                <xs:element ref="sources"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
